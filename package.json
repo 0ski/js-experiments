@@ -1,0 +1,23 @@
+{
+  "name": "js-experiments",
+  "version": "1.0.0",
+  "description": "My experiments with JS features",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0ski/js-experiments.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0ski/js-experiments/issues"
+  },
+  "homepage": "https://github.com/0ski/js-experiments#readme",
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.23.0"
+  }
+}
