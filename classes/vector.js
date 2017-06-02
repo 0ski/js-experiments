@@ -32,6 +32,10 @@ class Vector {
       Math.pow(this.start.y - this.end.y, 2)
     );
   }
+
+  len() {
+    return this.length;
+  }
 }
 
 module.exports = Vector;
