@@ -80,14 +80,4 @@ class Graph {
   }
 }
 
-let graph = new Graph();
-graph.randomizeConnections(10);
-console.log(graph.nodes);
-console.log(graph.connections);
-
-let graph2 = new Graph();
-graph2.createFullyConnected();
-console.log(graph2.nodes);
-console.log(graph2.connections);
-
 module.exports = Graph;

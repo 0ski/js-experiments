@@ -30,7 +30,7 @@ class Stack {
         }
     }
 
-    pick() {
+    peek() {
         if (this.head) {
             return this.head.val;
         }
@@ -69,7 +69,7 @@ class Queue {
         return head.val;
     }
 
-    pick() {
+    peek() {
         return this.head.val;
     }
 }
@@ -100,7 +100,12 @@ class QueueFromStacks {
         return this.s1.pop();
     }
 
-    pick() {
-        return this.s1.pick();
+    peek() {
+        return this.s1.peek();
     }
+}
+
+module.exports = {
+  Queue,
+  Stack
 }
