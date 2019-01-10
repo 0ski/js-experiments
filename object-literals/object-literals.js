@@ -1,3 +1,6 @@
+const util = require('util');
+const inspect = util.inspect.custom;
+
 let testString = 'Hello';
 let dynamic = 'DynamicProp';
 
@@ -19,7 +22,7 @@ let obj = {
 
   testString,
   [dynamic]: 14,
-  inspect() {
+  [inspect]: function () {
     return 'Hello world!';
   },
 };

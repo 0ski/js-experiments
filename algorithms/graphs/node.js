@@ -1,18 +1,22 @@
 class Node {
-  constructor(children=[]) {
-    this._children = Array.from(children);
+  constructor(connections=[]) {
+    this._connections = Array.from(connections);
   }
 
-  addChild(node) {
-    this._children.push(node);
+  addConnection(node) {
+    this._connections.push(node);
   }
 
-  removeChild(node) {
-    this._children = this._children.filter(child => child !== node);
+  removeConnection(node) {
+    this._connections = this._connections.filter(connection => connection !== node);
   }
 
-  setChildren(nodes) {
-    this._children = nodes;
+  setConnections(nodes) {
+    this._connections = nodes;
+  }
+
+  connections() {
+    return this._connections;
   }
 }
 
