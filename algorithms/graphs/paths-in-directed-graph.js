@@ -1,7 +1,7 @@
 const Graph = require('./graph');
 
 let graph = new Graph(10, {
-  unidirectional: false,
+  directed: true,
   buckles: false,
   seed: 1,
 });

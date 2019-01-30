@@ -12,17 +12,17 @@ class Graph {
   constructor(
     n=5, //number of nodes
     {
-      unidirectional,
+      directed,
       buckles,
       seed,
     } = {
-      unidirectional: true, //two-ways direction when false
+      directed: true, //directed or undirected graph
       buckles: true, //if nodes could connect to themselves
       seed: 0,
     }
   ) {
     this.n = n;
-    this.uni = unidirectional;
+    this.directed = directed;
     this.buckles = buckles;
     this._seed = seed;
     this._random = seedrandom(seed);
@@ -31,7 +31,7 @@ class Graph {
 
   createFullyConnected() {
     let {
-      n, uni, buckles, nodes,
+      n, directed, buckles, nodes,
     } = this;
 
     let connections = Array(n)
@@ -57,13 +57,13 @@ class Graph {
 
   randomizeConnections(total=10) {
     let {
-      n, uni, buckles, nodes,
+      n, directed, buckles, nodes,
     } = this;
 
     console.log(`Randomizing ${total} connections for ${n} nodes`);
 
     let max = n * (n - 1);
-    if (uni) max = max / 2;
+    if (!directed) max = max / 2;
     if (buckles) max = max + n;
     let toRemove = Math.max(max - total, 0);
 
@@ -88,7 +88,7 @@ class Graph {
 
       // console.log(`Removing connection from ${row} to ${col}`);
       filterOutConnection(row, col);
-      if (uni && row !== col) {
+      if (!directed && row !== col) {
         filterOutConnection(col, row);
       }
     }
@@ -97,7 +97,8 @@ class Graph {
   }
 
   isInGraph(node) {
-    return this.getNodeId(node) !== -1;
+    if (node instanceof Node) node = this.getNodeId(node);
+    return node > -1 && node < this.nodes.length;
   }
 
   getNodeId(node) {
@@ -113,7 +114,7 @@ class Graph {
   }
 
   findPathsAndCycles(start) {
-    if (start instanceof Node && !this.isInGraph(start)) return;
+    if (!this.isInGraph(start)) return;
     if (start instanceof Node) start = this.getNodeId(start);
 
     let node = this.nodes[start];
@@ -138,7 +139,9 @@ class Graph {
         let connectionId = this.getNodeId(connection);
         let connectionPath = Array.from(path);
 
-        if (path.indexOf(connectionId) > -1) {
+        if (!this.directed && connectionId === id) {
+          return;
+        } else if (path.indexOf(connectionId) > -1) {
           connectionPath.push(connectionId);
           paths.push(connectionPath);
           return;
@@ -164,11 +167,11 @@ class Graph {
   }
 
   findCyclesToItself(start) {
-    if (start instanceof Node && !this.isInGraph(start)) return;
+    if (!this.isInGraph(start)) return;
     if (start instanceof Node) start = this.getNodeId(start);
 
     let node = this.nodes[start];
-    if (node.connections().length === 0) return;
+    if (node.connections().length === 0) return [];
 
     let q = new Queue();
     let paths = [];
@@ -203,6 +206,42 @@ class Graph {
     }
 
     return paths;
+  }
+
+  //Bi-directional search
+  findShortestPath(start, finish) {
+    if (!this.isInGraph(start) || !this.isInGraph(finish)) return;
+    if (start instanceof Node) start = this.getNodeId(start);
+    if (finish instanceof Node) finish = this.getNodeId(finish);
+    if (start === finish) return [this.getNode(start)];
+
+    let paths = [];
+
+    let leftQ = new Queue();
+    let rightQ = new Queue();
+
+    let touchedByLeftSide = {
+      [start]: [start],
+    };
+    let touchedByRightSide = {
+      [finish]: [finish],
+    };
+
+    leftQ.enqueue([start]);
+    rightQ.enqueue([finish]);
+
+    while (leftQ.length > 0 && rightQ.length > 0) {
+      let leftPath = Array.from(leftQ.dequeue());
+      let rightPath = Array.from(rightQ.dequeue());
+
+      let leftId = leftPath[leftPath.length - 1];
+      let leftNode = this.getNode(leftId);
+      leftNode.connections().forEach(connection => {
+        let connectionId = this.getNodeId(connection);
+        if (touchedByLeftSide[connectionId]) return;
+        if (touchedByRightSide[connectionId]) return []; //continiue here for merge
+      });
+    }
   }
 
   toString() {
